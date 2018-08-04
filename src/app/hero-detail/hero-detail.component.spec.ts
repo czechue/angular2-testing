@@ -1,4 +1,11 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+  tick
+} from "@angular/core/testing";
 import { HeroDetailComponent } from "./hero-detail.component";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
@@ -46,4 +53,29 @@ describe("HeroDetailComponent", () => {
       "SUPERDUDE"
     );
   });
+
+  // using async debounce - ex.1 - it works for both setTimeouts and promises
+  it('should call updateHero when save is called using fakeAsync and tick / flush', fakeAsync (() => {
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+
+    fixture.componentInstance.save();
+    // tick(250);
+    flush();
+
+    expect(mockHeroService.updateHero).toHaveBeenCalled();
+
+  }))
+
+  // using async / await = to promise testing - ex. 2 - works for promises only
+  // it("should call updateHero when save is called using async func", async(() => {
+  //   mockHeroService.updateHero.and.returnValue(of({}));
+  //   fixture.detectChanges();
+  //   fixture.componentInstance.save();
+  //
+  //   // when all promised have beend resolved
+  //   fixture.whenStable().then(() => {
+  //     expect(mockHeroService.updateHero).toHaveBeenCalled();
+  //   });
+  // }));
 });
